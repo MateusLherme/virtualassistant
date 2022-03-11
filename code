@@ -1,0 +1,86 @@
+import webbrowser
+from os import system #Abrir explorer, chrome, cmd, etc
+import pyautogui #Abrir youtube e/ou jupyter notebook
+import time #Time sleep
+from speech_recognition import Recognizer, Microphone
+from pyttsx3 import init
+
+
+#Webbrowser vai na janela aberta do Chrome, abre uma nova guia com o link
+#Se nao houver janelas abertas, entao ele abrira uma nova.
+webbrowser.register("chrome",
+                    None,
+                    webbrowser.BackgroundBrowser("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"))
+
+#inteligencia artificial pra reconhecer palavras semelhantes e nao gerar erro. Mudar a linguagem da voz
+#Deixar ela em stand-by, depois com uma palavra, ativar ela. Depois com "parar", ela fica em standby
+
+class Comandos:
+
+    def laura_ouvir(self):
+        global rec
+        rec = Recognizer()
+        with Microphone() as mic:
+            print("Por favor, fale algo")
+            rec.pause_threshold = 0.6
+            global audio
+            audio = rec.listen(mic)
+            try:
+                global fala
+                fala = (rec.recognize_google(audio, language="pt-br")).lower()
+                print(f"Voce disse: {fala}")
+            except:
+                print("Ocorreu um erro\nAjuste seu microfone")
+                laura.laura_ouvir()
+                #Quando se tornar um executavel, e eu nao falar nada, este codigo ficara
+                #se repetindo, "erro erro" a toda hora.
+
+        return fala
+
+    def laura_dizer(self,falar):
+        maquina = init("sapi5")
+        maquina.say(falar)
+        maquina.runAndWait()
+
+
+    def laura_acoes(self):
+        frase = self.laura_ouvir()
+
+        if "navegador" in frase:
+            print("abrindo navegador")
+            system("start chrome")
+
+        elif "abrir youtube" in frase: # Ao falar youtu, ele nao reconhece como youtube
+            webbrowser.get("chrome").open("www.youtube.com")
+
+        elif "pesquise" and "youtube" in frase:
+            convertendo = frase.split(" ") # Transformei em lista pra pegar os indices
+            convertendo.pop(1) # Excluo o segundo indice
+            convertendo.pop(0) # Excluo o primeiro indice
+            link = "+".join(convertendo) # Transformo lista em string com separacao por "+"
+            webbrowser.get("chrome").open(f"https://www.youtube.com/results?search_query={link}")
+
+        elif "abrir twitch" in frase:
+            webbrowser.get("chrome").open("twitch.tv")
+
+
+        elif "notebook" in frase: # Ao falar Jupyter ele reconhece jupiter, e nao abre.
+            laura.laura_dizer("Opening Jupyter Notebook")
+            system("start cmd")
+            time.sleep(2.2)
+            pyautogui.write("jupyter notebook")
+            pyautogui.press("enter")
+
+        elif "noticias" in frase:
+            webbrowser.get("chrome").open("https://areferencia.com")
+            webbrowser.get("chrome").open("https://www.oantagonista.com")
+
+        else:
+            print("Isto nao foi programado")
+            laura.laura_dizer("It was not programmed")
+            laura.laura_acoes()
+
+
+
+laura = Comandos()
+laura.laura_acoes()
