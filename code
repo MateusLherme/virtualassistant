@@ -12,9 +12,6 @@ webbrowser.register("chrome",
                     None,
                     webbrowser.BackgroundBrowser("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"))
 
-#inteligencia artificial pra reconhecer palavras semelhantes e nao gerar erro. Mudar a linguagem da voz
-#Deixar ela em stand-by, depois com uma palavra, ativar ela. Depois com "parar", ela fica em standby
-
 class Comandos:
 
     def laura_ouvir(self):
